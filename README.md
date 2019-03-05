@@ -1,7 +1,7 @@
 # FaceDetection
 Face Detection with a sliding window
 
-![alt text] (https://github.com/singhshraddha/FaceDetection/blob/master/html/sd_2.jpg)
+![alt text](https://github.com/singhshraddha/FaceDetection/blob/master/html/sd_2.jpg)
 
 
 Run: python student_code.py

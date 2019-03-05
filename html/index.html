@@ -1,0 +1,222 @@
+<html>
+<head>
+<title>Computer Vision Project</title>
+<link href='http://fonts.googleapis.com/css?family=Nunito:300|Crimson+Text|Droid+Sans+Mono' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" title="Default" href="styles/github.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+
+<link rel="stylesheet" href="highlighting/styles/default.css">
+<script src="highlighting/highlight.pack.js"></script>
+
+<style type="text/css">
+body {
+	margin: 0px;
+	width: 100%;
+	font-family: 'Crimson Text', serif;
+	font-size: 20px;
+	background: #fcfcfc;
+}
+h1 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 28px;
+	margin: 25px 0px 0px 0px;
+	text-transform: lowercase;
+
+}
+
+h2 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 32px;
+	margin: 15px 0px 35px 0px;
+	color: #333;
+	word-spacing: 3px;
+}
+
+h3 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 26px;
+	margin: 10px 0px 10px 0px;
+	color: #333;
+	word-spacing: 2px;
+}
+h4 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 22px;
+	margin: 10px 0px 10px 0px;
+	color: #333;
+	word-spacing: 2px;
+}
+
+h5 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 18px;
+	margin: 10px 0px 10px 0px;
+	color: #111;
+	word-spacing: 2px;
+}
+
+p, li {
+	color: #444;
+}
+
+a {
+	color: #DE3737;
+}
+
+.container {
+	margin: 0px auto 0px auto;
+	width: 1160px;
+}
+
+#header {
+	background: #333;
+	width: 100%;
+}
+
+#headersub {
+	color: #ccc;
+	width: 960px;
+	margin: 0px auto 0px auto;
+	padding: 20px 0px 20px 0px;
+}
+
+.chart {
+	width: 480px;
+}
+.lol {
+	font-size: 16px;
+	color: #888;
+	font-style: italic;
+}
+.sep {
+	height: 1px;
+	width: 100%;
+	background: #999;
+	margin: 20px 0px 20px 0px;
+}
+.footer{
+	font-size: 16px;
+}
+.latex {
+	width: 100%;
+}
+
+.latex img {
+	display: block;
+	margin: 0px auto 0px auto;
+}
+
+pre {
+	font-family: 'Droid Sans Mono';
+	font-size: 14px;
+}
+
+table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+table td img {
+  text-align: center;
+  vertical-align: middle;
+}
+
+#contents a {
+}
+</style>
+<script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+</script>
+</head>
+<body>
+<div id="header" >
+<div id="headersub">
+<h1>shraddha singh</h1>
+</div>
+</div>
+<div class="container">
+
+<h2> Project 5: Face Detection with a Sliding Window</h2>
+
+<p>This project uses a sliding window technique to dectect faces in images. To accomplish this we first collect Hog-features for both positive and negative samples and train a linear svm to detect a face and not a face. Then we implement a multiple-scale detector, which slides a fixed size window across a test image to detect faces. </p>
+
+<ol>
+
+<h5><li>Features from positive and negative sample</h5>
+<p> To extrat features from positive samples, I used two variations of each image. The first was the original image. Next, I added uniform noise between 0-20 to the original image. Having two varints of the image gave more features to learn from. In addition, I used a hog-cell size of 5 and template-size of 35. With a smaller cell-size there are more features which aid in learning (as shown in Image 2 below).</p>
+
+<p>There were two stages to extracting features from negative sample. The first stage was pre-classifier training. In the first stage, I took the negative samples and cropped them inorder for the size of image to match the template set by the positive samples. Each image is randomly scaled from 0.8-1 and cropped multiple times. Hog-features are extracted for each crop. Scaling the negative images tuned the dataset better for multi-scale detection. I also tuned the datasize to 12000 sample data to match the size of positive samples to remove biases from prediction.</p>
+</li>
+
+<h5><li>SVM</h5>
+<p> A linear svm is trained with the features from positive and negative samples. The data spread as a function of confidence is shown below. We can notice that most of the positive data has confidence > 0. Also, included below is a learned hog-feature template. We can see a clear definition of face in the template. This template was learnt using template-size=35 and cell-size=5. I have included a template-size-36, cell-size=6 template learnt from svm. Using the former improved the average precision by 5%</p>
+
+<img src="data_spread.jpg" width="50%" height=auto/><h6>Image 1: data spread for positive and negative samples</h6>
+
+<table border=1>
+<tr>
+<td><img src="hog_b.jpg" width="50%" height=auto/><br><p>template learnt template-size=35 cell-size=5</p></td>
+<td><img src="hog_g.jpg" width="50%" height=auto/><br><p>template learnt template-size=35 cell-size=5</p></td>
+</tr>
+<tr>
+<td><p><img src="hog_b_6.jpg" width="50%" height=auto/><br><p>template learnt template-size=36 cell-size=6</p></td>
+<td><p><img src="hog_g_6.jpg" width="50%" height=auto/><br><p>template learnt template-size=36 cell-size=6</p></td>
+</tr>
+</table>
+<h6>Image 2: Learnt Hog templates</h6>
+
+<p>For final testing a C value of 5e-2 is used. Using a C value of 1e-4 gives the following result</p>
+<table border=1>
+<tr>
+<td><p><img src="data_spread_1e4.jpg" width="50%" height=auto/><br><p>data spread for svm trained with C=1e-4</p></td>
+<td><p><img src="pr_1e4.jpg" width="50%" height=auto/><br><p>face detector precision recall for svm trained with C=1e-4</p></td>
+</tr>
+</table>
+<h6>Image 3: Experiment learning with C=1e-4</h6>
+
+</li>
+
+<h5><li>Mining hard negative</h5>
+<p>After training a classifier, we use this classifier to mine heard negatives. Again, I scaled each image randomly between 0.5-1 and cropped template-sized images. For each crop if the svm predicts a positice score, the crop is stores as a hard negative. We combine the hard negatives with the original negatives and train a new classifier. As seem in Image 4 using hard negative didn't affect the average precision.</p>
+
+<h5><li>Mulitpe scale Detection</h5>
+<p>Firstly, a single scale detector is implemented by first transforming each image into a hog-feature space and then stepping in the space one step at a time. At each step we classify the feature as a face or not. We collect all features in an image above -1 confidence and run non-maximal supression to remove duplicates and return the windows where face is detected. For multiple scale the same steps are repeated at four scales - 0.9, 0.5, 0.3, 0.25. In multiple-scale detection, increasing the features considered for NMS increased AP by 10%.</p>
+
+<table border=1>
+<tr>
+<td><p><img src="pr.jpg" width="50%" height=auto/><br><p>Precision-recall curve w/out hard negative</p></td>
+<td><p><img src="vj.jpg" width="50%" height=auto/><br><p>recall curve w/out hard negatives</p></td>
+</tr>
+<tr>
+<td><p><img src="pr_hn.jpg" width="50%" height=auto/><br><p>Precision-recall curve w/out hard negative</p></td>
+<td><p><img src="vj_hn.jpg" width="50%" height=auto/><br><p>recall curve w/out hard negatives</p></td>
+</tr>
+</table>
+<h6>Image 4: Results for multi-scale face detector</h6>
+
+</li>
+
+<h5><li>Sample detections</h5>
+
+<table border=1>
+<tr>
+<td><p><img src="sd_1.jpg" width="90%" height=auto/><br><p></p></td>
+<td><p><img src="sd_3.jpg" width="90%" height=auto/><br><p></p></td>
+</tr>
+<tr>
+<td><p><img src="sd_4.jpg" width="90%" height=auto/><br><p></p></td>
+<td><p><img src="sd_2.jpg" width="90%" height=auto/><br><p></p></td>
+</tr>
+</table>
+<h6>Image 5: Sample face detections</h6>
+
+</ol>
+
+
+</body>
+</html>

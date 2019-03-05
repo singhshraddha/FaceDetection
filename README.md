@@ -6,7 +6,8 @@ Face Detection with a sliding window
 
 Run: python student_code.py
 
-*data not included
+*data not included*
+
 Tasks:
 1. Get features from positive samples
 2. Get features from negative samples
